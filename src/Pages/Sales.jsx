@@ -132,14 +132,14 @@ const Sales = () => {
                 <table className="w-full">
                     <thead className="bg-slate-100">
                         <tr>
-                            <th className="px-4 py-3 text-left">Sale ID</th>
-                            <th className="px-4 py-3 text-left">Member</th>
-                            <th className="px-4 py-3 text-left">Product</th>
-                            <th className="px-4 py-3 text-left">Qty</th>
-                            <th className="px-4 py-3 text-left">Payment</th>
-                            <th className="px-4 py-3 text-left">Price</th>
-                            <th className="px-4 py-3 text-left">Total</th>
-                            <th className="px-4 py-3 text-left">Date</th>
+                            <th className="px-4 py-4 text-left text-xs font-bold text-slate-600">Sale ID</th>
+                            <th className="px-4 py-4 text-left text-xs font-bold text-slate-600">Member</th>
+                            <th className="px-4 py-4 text-left text-xs font-bold text-slate-600">Product</th>
+                            <th className="px-4 py-4 text-left text-xs font-bold text-slate-600">Qty</th>
+                            <th className="px-4 py-4 text-left text-xs font-bold text-slate-600">Payment</th>
+                            <th className="px-4 py-4 text-left text-xs font-bold text-slate-600">Price</th>
+                            <th className="px-4 py-4 text-left text-xs font-bold text-slate-600">Total</th>
+                            <th className="px-4 py-4 text-left text-xs font-bold text-slate-600">Date</th>
                         </tr>
                     </thead>
 

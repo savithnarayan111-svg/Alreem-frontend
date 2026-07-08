@@ -41,25 +41,25 @@ const Transactions = () => {
                                 ID
                             </th>
                             <th className="px-6 py-4 text-left text-xs font-bold text-slate-600">
-                                Name
+                                NAME
                             </th>
                             <th className="px-6 py-4 text-left text-xs font-bold text-slate-600">
-                                For
+                                FOR
                             </th>
                             <th className="px-6 py-4 text-left text-xs font-bold text-slate-600">
-                                Phone
+                                PHONE
                             </th>
                             <th className="px-6 py-4 text-left text-xs font-bold text-slate-600">
-                                Amount
+                                AMOUNT
                             </th>
                             <th className="px-6 py-4 text-left text-xs font-bold text-slate-600">
-                                Type
+                                TYPE
                             </th>
                             <th className="px-6 py-4 text-left text-xs font-bold text-slate-600">
-                                Method
+                                METHOD
                             </th>
                             <th className="px-6 py-4 text-left text-xs font-bold text-slate-600">
-                                Date
+                                DATE
                             </th>
                         </tr>
                     </thead>
@@ -98,8 +98,8 @@ const Transactions = () => {
 
                                     <td
                                         className={`px-6 py-4 font-bold ${transaction.transaction_for === "Member"
-                                                ? "text-green-600"
-                                                : "text-red-600"
+                                            ? "text-green-600"
+                                            : "text-red-600"
                                             }`}
                                     >
                                         {transaction.transaction_for === "Member"
