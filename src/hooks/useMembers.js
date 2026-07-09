@@ -4,7 +4,8 @@ import {
     createMember,
     updateMember,
     deleteMember,
-    memberpayment
+    memberpayment,
+    renewMember
 } from "../api/members";
 
 export default function useMembers() {
@@ -50,6 +51,16 @@ export default function useMembers() {
         setMembers((prev) => prev.filter((m) => m.id !== id));
     };
 
+    const payMember = async (id, data) => {
+        await memberpayment(id, data);
+        await fetchMembers();
+    };
+
+    const renewMemberPlan = async (id, data) => {
+        await renewMember(id, data);
+        await fetchMembers();
+    };
+
     return {
         members,
         loading,
@@ -57,5 +68,7 @@ export default function useMembers() {
         addMember,
         editMember,
         removeMember,
+        payMember,
+        renewMemberPlan,
     };
 }

@@ -25,9 +25,18 @@ export const deleteMember = (id) => {
     return api.delete(`admin/api/members/${id}/delete/`);
 };
 
-
+// MEMBER PAYMENT
 export const memberpayment = (id, data) => {
     return api.post(`admin/api/member/${id}/payments/add/`, data);
 };
 
+// RENEW MEMBER
+export const renewMember = (id, data) => {
+    const formData = new FormData();
 
+    Object.entries(data).forEach(([k, v]) => {
+        if (v !== null && v !== undefined) formData.append(k, v);
+    });
+
+    return api.post(`admin/api/members/${id}/renew/`, formData);
+};

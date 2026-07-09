@@ -6,10 +6,11 @@ import {
   ShieldCheck,
   CircleCheckBig,
   X,
+  Bolt
 } from "lucide-react";
 import Addmember from "../../Pages/member/Addmember";
 import ViewMemberModal from "../member/ViewMemberModal";
-import { getMembers, deleteMember, memberpayment } from "../../api/members";
+import { getMembers, deleteMember, memberpayment, renewMember } from "../../api/members";
 import Pagination from "../../Components/Pagination";
 import ConfirmActionModal from "../../Components/ConfirmActionModal";
 import AlertMessage from "../../Components/AlertMessage";
@@ -67,11 +68,20 @@ const Members = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
+  const [showRenewForm, setShowRenewForm] = useState(false);
+  const [plans, setPlans] = useState([]);
+
+  const [renewForm, setRenewForm] = useState({
+    plan: "",
+    expiry_date: "",
+  });
+
   const buttons = ["All", "Active", "Expired", "Paused", "Blocked"];
 
   useEffect(() => {
     fetchMembers();
     fetchDashboardStats();
+    fetchPlans();
   }, []);
 
   useEffect(() => {
@@ -96,6 +106,15 @@ const Members = () => {
     }
   };
 
+  const fetchPlans = async () => {
+    try {
+      const res = await api.get("admin/api/plans/");
+      setPlans(res.data || []);
+    } catch (error) {
+      console.error("Error fetching plans:", error);
+    }
+  };
+
   const handleMemberSuccess = async () => {
     await fetchMembers();
     await fetchDashboardStats();
@@ -108,6 +127,14 @@ const Members = () => {
       payment_type: "",
       payment_method: "",
       payment_date: "",
+    });
+  };
+
+  const closeRenewForm = () => {
+    setShowRenewForm(false);
+    setRenewForm({
+      plan: "",
+      expiry_date: "",
     });
   };
 
@@ -226,6 +253,87 @@ const Members = () => {
     });
   };
 
+  const handleOpenRenewForm = (member) => {
+    setSelectedMember(member);
+    setRenewForm({
+      plan: member.plan || "",
+      expiry_date: "",
+    });
+    setShowRenewForm(true);
+  };
+
+  const handleRenewPlanChange = (e) => {
+    const selectedPlanName = e.target.value;
+
+    const selectedPlan = plans.find((p) => p.name === selectedPlanName);
+
+    if (!selectedPlan) {
+      setRenewForm({
+        plan: selectedPlanName,
+        expiry_date: "",
+      });
+      return;
+    }
+
+    const duration = Number(
+      selectedPlan.duration ??
+      selectedPlan.days ??
+      selectedPlan.duration_in_days ??
+      0
+    );
+
+    const today = new Date();
+
+    let baseDate = today;
+
+    if (selectedMember?.expiry_date) {
+      const memberExpiry = new Date(selectedMember.expiry_date);
+      if (!isNaN(memberExpiry.getTime()) && memberExpiry >= today) {
+        baseDate = memberExpiry;
+      }
+    }
+
+    const expiry = new Date(baseDate);
+    expiry.setDate(expiry.getDate() + duration);
+
+    setRenewForm({
+      plan: selectedPlanName,
+      expiry_date: expiry.toISOString().split("T")[0],
+    });
+  };
+
+  const handleRenewSubmit = () => {
+    if (!renewForm.plan) {
+      setAlertState({
+        show: true,
+        message: "Please select a plan",
+        type: "warning",
+      });
+      return;
+    }
+
+    openConfirmModal({
+      title: "Renew Membership",
+      message: `Are you sure you want to renew membership for ${selectedMember?.name} with ${renewForm.plan} plan?`,
+      confirmText: "Confirm Renew",
+      type: "default",
+      successMessage: `${selectedMember?.name}'s membership renewed successfully`,
+      action: async () => {
+        await renewMember(selectedMember.id, {
+          plan: renewForm.plan,
+        });
+
+        await fetchMembers();
+        await fetchDashboardStats();
+
+        const res = await api.get(`admin/api/members/${selectedMember.id}/`);
+        setSelectedMember(res.data);
+
+        closeRenewForm();
+      },
+    });
+  };
+
   const filteredMembers = members
     .filter((member) => {
       const matchesStatus =
@@ -240,7 +348,6 @@ const Members = () => {
       return matchesStatus && matchesSearch;
     })
     .sort((a, b) => {
-      // Only in Expired tab: who expired first comes first
       if (active === "Expired") {
         if (!a.expiry_date && !b.expiry_date) return 0;
         if (!a.expiry_date) return 1;
@@ -249,7 +356,6 @@ const Members = () => {
         return new Date(a.expiry_date) - new Date(b.expiry_date);
       }
 
-      // All / Active / Paused / Blocked -> keep ID order
       return a.id - b.id;
     });
 
@@ -340,7 +446,6 @@ const Members = () => {
         </div>
       </div>
 
-      {/* FILTER BUTTONS */}
       <div className="flex items-center justify-between gap-4 py-2 px-2 rounded-lg border border-slate-100 shadow-sm">
         <div className="flex gap-3 flex-wrap">
           {buttons.map((btn) => (
@@ -366,7 +471,6 @@ const Members = () => {
         />
       </div>
 
-      {/* TABLE */}
       <div className="bg-white rounded-xl border border-slate-100 shadow-sm overflow-x-auto">
         <table className="w-full table-fixed">
           <thead className="bg-slate-50">
@@ -475,6 +579,16 @@ const Members = () => {
 
                 <td className="px-6 py-4">
                   <div className="flex gap-3 whitespace-nowrap">
+                    <button
+                      className="p-2 rounded-md hover:bg-blue-100"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleOpenRenewForm(member);
+                      }}
+                    >
+                      <Bolt size={20} className="text-purple-600" />
+                    </button>
+
                     {member.due_amount <= 0 ? (
                       <span className="pt-2 px-2 bg-blue-100 rounded-full text-xs">
                         <CircleCheckBig size={18} className="text-blue-600" />
@@ -543,6 +657,7 @@ const Members = () => {
           </tbody>
         </table>
       </div>
+
       <Pagination
         currentPage={currentPage}
         totalItems={filteredMembers.length}
@@ -626,7 +741,6 @@ const Members = () => {
               className="w-full border border-slate-300 shadow-md rounded-lg px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
 
-
             <select
               value={paymentData.payment_method}
               onChange={(e) =>
@@ -635,7 +749,8 @@ const Members = () => {
                   payment_method: e.target.value,
                 })
               }
-              className="w-full border border-slate-300 shadow-md rounded-lg px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              className="w-full border border-slate-300 shadow-md rounded-lg px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
               <option value="">Payment Method</option>
               <option value="Cash">Cash</option>
               <option value="Card">Card</option>
@@ -669,6 +784,58 @@ const Members = () => {
               >
                 Save
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showRenewForm && selectedMember && (
+        <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
+          <div className="bg-white w-full max-w-md rounded-xl shadow-xl p-6">
+            <h3 className="text-lg font-semibold mb-4">Renew Membership</h3>
+
+            <div className="space-y-4">
+              <input
+                value={`${selectedMember?.id}/${selectedMember?.name}`}
+                readOnly
+                className="w-full border border-slate-300 shadow-md rounded-lg px-3 py-2 bg-slate-50"
+              />
+
+              <select
+                value={renewForm.plan}
+                onChange={handleRenewPlanChange}
+                className="w-full border border-slate-300 shadow-md rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Select Plan</option>
+                {plans.map((plan) => (
+                  <option key={plan.id} value={plan.name}>
+                    {plan.name}
+                  </option>
+                ))}
+              </select>
+
+              <input
+                type="date"
+                value={renewForm.expiry_date}
+                readOnly
+                className="w-full border border-slate-300 shadow-md rounded-lg px-3 py-2 bg-slate-50"
+              />
+
+              <div className="flex justify-end gap-2">
+                <button
+                  onClick={closeRenewForm}
+                  className="px-4 py-2 bg-gray-500 text-white rounded-lg"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  onClick={handleRenewSubmit}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg"
+                >
+                  Renew
+                </button>
+              </div>
             </div>
           </div>
         </div>

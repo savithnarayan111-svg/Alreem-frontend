@@ -132,14 +132,14 @@ const Sales = () => {
                 <table className="w-full">
                     <thead className="bg-slate-100">
                         <tr>
-                            <th className="px-4 py-4 text-left text-xs font-bold text-slate-600">Sale ID</th>
-                            <th className="px-4 py-4 text-left text-xs font-bold text-slate-600">Member</th>
-                            <th className="px-4 py-4 text-left text-xs font-bold text-slate-600">Product</th>
-                            <th className="px-4 py-4 text-left text-xs font-bold text-slate-600">Qty</th>
-                            <th className="px-4 py-4 text-left text-xs font-bold text-slate-600">Payment</th>
-                            <th className="px-4 py-4 text-left text-xs font-bold text-slate-600">Price</th>
-                            <th className="px-4 py-4 text-left text-xs font-bold text-slate-600">Total</th>
-                            <th className="px-4 py-4 text-left text-xs font-bold text-slate-600">Date</th>
+                            <th className="px-4 py-4 text-left text-xs font-bold text-slate-600">SALE ID</th>
+                            <th className="px-4 py-4 text-left text-xs font-bold text-slate-600">MEMBER</th>
+                            <th className="px-4 py-4 text-left text-xs font-bold text-slate-600">PRODUCT</th>
+                            <th className="px-4 py-4 text-left text-xs font-bold text-slate-600">QTY</th>
+                            <th className="px-4 py-4 text-left text-xs font-bold text-slate-600">PAYMENT</th>
+                            <th className="px-4 py-4 text-left text-xs font-bold text-slate-600">PRICE</th>
+                            <th className="px-4 py-4 text-left text-xs font-bold text-slate-600">TOTAL</th>
+                            <th className="px-4 py-4 text-left text-xs font-bold text-slate-600">DATE</th>
                         </tr>
                     </thead>
 
