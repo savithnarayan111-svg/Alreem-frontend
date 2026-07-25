@@ -107,6 +107,7 @@ const Sales = () => {
                     </div>
 
                     {/* DOWNLOAD BUTTON (FIXED) */}
+
                     <div className="flex items-center">
                         <button
                             onClick={async () => {
@@ -120,8 +121,10 @@ const Sales = () => {
 
                                 await generatePDF();
                             }}
+                            className="flex items-center gap-2 border-2 border-gray-300 rounded-lg px-4 py-2 hover:bg-gray-100 transition"
                         >
-                            <ArrowDownToLine size={18} className="text-green-600" />
+                            <span className="text-sm font-semibold">Print Report</span>
+                            <ArrowDownToLine size={18} className="text-blue-600" />
                         </button>
                     </div>
                 </div>
