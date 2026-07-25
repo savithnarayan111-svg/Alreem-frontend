@@ -54,13 +54,13 @@ const SidebarItem = ({ icon: Icon, label, path, danger = false, onClick }) => {
 const Sidebar = () => {
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("adminUser");
+  // const handleLogout = () => {
+  //   localStorage.removeItem("accessToken");
+  //   localStorage.removeItem("refreshToken");
+  //   localStorage.removeItem("adminUser");
 
-    navigate("/login");
-  };
+  //   navigate("/login");
+  // };
 
   return (
     <aside className="w-[280px] bg-white border-r border-slate-200 flex flex-col shrink-0 h-screen sticky top-0">
