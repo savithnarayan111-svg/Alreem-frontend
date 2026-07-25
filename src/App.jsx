@@ -14,29 +14,33 @@ import Transactions from "./Pages/Transactions";
 import Enquiry from "./Pages/Enquiry";
 import Login from "./Pages/Login";
 
-const router = createBrowserRouter([{
-  path: "/login",
-  element: <Login />,
-},
 
-{
-  path: "/",
-  element: <Layout />,
-  children: [
-    { index: true, element: <Dashboard /> },
-    { path: "dashboard", element: <Dashboard /> },
-    { path: "members", element: <Members /> },
-    { path: "branches", element: <Branches /> },
-    { path: "plans", element: <Plans /> },
-    { path: "products", element: <Products /> },
-    { path: "settings", element: <Settings /> },
-    { path: "sales", element: <Sales /> },
-    { path: "invoice", element: <Invoice /> },
-    { path: "staffs", element: <Staffs /> },
-    { path: "transactions", element: <Transactions /> },
-    { path: "enquiry", element: <Enquiry /> },
-  ],
-},
+const router = createBrowserRouter([
+  // {
+  // path: "/login",
+  // element: <Login />,
+  //   path: "dashboard",
+  //   element: <Dashboard />,
+  // },
+
+  {
+    path: "/",
+    element: <Layout />,
+    children: [
+      { index: true, element: <Dashboard /> },
+      { path: "dashboard", element: <Dashboard /> },
+      { path: "members", element: <Members /> },
+      { path: "branches", element: <Branches /> },
+      { path: "plans", element: <Plans /> },
+      { path: "products", element: <Products /> },
+      { path: "settings", element: <Settings /> },
+      { path: "sales", element: <Sales /> },
+      { path: "invoice", element: <Invoice /> },
+      { path: "staffs", element: <Staffs /> },
+      { path: "transactions", element: <Transactions /> },
+      { path: "enquiry", element: <Enquiry /> },
+    ],
+  },
 ]);
 
 const App = () => {
@@ -44,3 +48,4 @@ const App = () => {
 };
 
 export default App;
+

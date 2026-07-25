@@ -90,14 +90,14 @@ const Sidebar = () => {
         <SidebarItem icon={Settings} label="Settings" path="/settings" />
       </nav>
 
-      <div className="p-4 border-t border-slate-50">
+      {/* <div className="p-4 border-t border-slate-50">
         <SidebarItem
           icon={LogOut}
           label="Logout"
           danger
           onClick={handleLogout}
         />
-      </div>
+      </div> */}
     </aside>
   );
 };
