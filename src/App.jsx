@@ -14,13 +14,10 @@ import Transactions from "./Pages/Transactions";
 import Enquiry from "./Pages/Enquiry";
 import Login from "./Pages/Login";
 
-
 const router = createBrowserRouter([
   // {
-  // path: "/login",
-  // element: <Login />,
-  //   path: "dashboard",
-  //   element: <Dashboard />,
+  //   path: "/login",
+  //   element: <Login />,
   // },
 
   {
@@ -48,4 +45,3 @@ const App = () => {
 };
 
 export default App;
-
