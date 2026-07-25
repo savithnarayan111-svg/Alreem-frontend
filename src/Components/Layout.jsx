@@ -4,11 +4,11 @@ import Header from "./Header";
 import { Outlet, Navigate } from "react-router-dom";
 
 const Layout = () => {
-  const token = localStorage.getItem("accessToken");
+  // const token = localStorage.getItem("accessToken");
 
-  if (!token) {
-    return <Navigate to="/login" replace />;
-  }
+  // if (!token) {
+  //   return <Navigate to="/login" replace />;
+  // }
 
   return (
     <div className="flex h-screen w-full bg-[#f8fafc] overflow-hidden">
