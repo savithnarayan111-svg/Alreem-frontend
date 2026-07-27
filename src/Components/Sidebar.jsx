@@ -12,7 +12,7 @@ import {
   IndianRupee,
   SearchCheck
 } from 'lucide-react';
-import AlreemLogo from "../assets/Alreem-logo.ico";
+import logo from "../assets/logo.png";
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const SidebarItem = ({ icon: Icon, label, path, danger = false, onClick }) => {
@@ -65,7 +65,7 @@ const Sidebar = () => {
   return (
     <aside className="w-[280px] bg-white border-r border-slate-200 flex flex-col shrink-0 h-screen sticky top-0">
       <div className="h-24 flex items-center justify-center border-b border-slate-50 mb-4 px-4 text-center">
-        <img src={AlreemLogo} alt="Logo" className="w-28 h-auto" />
+        <img src={logo} alt="Logo" className="w-28 h-auto" />
       </div>
 
       <nav className="flex-1 overflow-y-auto px-4 space-y-1">

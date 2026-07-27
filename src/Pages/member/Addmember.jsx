@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { X, Camera, Upload } from "lucide-react";
 import api from "../../api/api";
 import ConfirmActionModal from "../../Components/ConfirmActionModal";
 import AlertMessage from "../../Components/AlertMessage";
+import Webcam from "react-webcam";
 
 const Addmember = ({ member, onClose, onSuccess }) => {
     const [formData, setFormData] = useState({
@@ -19,12 +20,19 @@ const Addmember = ({ member, onClose, onSuccess }) => {
         join_date: member?.join_date || "",
         expiry_date: member?.expiry_date || "",
         plan: member?.plan?.id || member?.plan || "",
+        branch: member?.branch?.id || member?.branch || "",
         paid_amount: member?.paid_amount || "",
         due_amount: member?.due_amount || 0,
         photo: null,
     });
 
+    const webcamRef = useRef(null);
+
+    const [showCamera, setShowCamera] = useState(false);
+    const [preview, setPreview] = useState(null);
+    const [errors, setErrors] = useState()
     const [plans, setPlans] = useState([]);
+    const [branches, setBranches] = useState([]);
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
 
@@ -119,6 +127,21 @@ const Addmember = ({ member, onClose, onSuccess }) => {
         setConfirmOpen(true);
     };
 
+
+    useEffect(() => {
+        fetchBranches();
+    }, []);
+
+    const fetchBranches = async () => {
+        try {
+            const res = await api.get("admin/api/branches/");
+            setBranches(res.data);
+        } catch (error) {
+            console.error("Error fetching branches:", error);
+        }
+    };
+
+
     const handleConfirmSubmit = async () => {
         try {
             setConfirmLoading(true);
@@ -168,6 +191,30 @@ const Addmember = ({ member, onClose, onSuccess }) => {
         }
     };
 
+    const capture = async () => {
+
+        const imageSrc = webcamRef.current.getScreenshot();
+
+        setPreview(imageSrc);
+
+        const blob = await (await fetch(imageSrc)).blob();
+
+        const file = new File(
+            [blob],
+            "member.jpg",
+            {
+                type: "image/jpeg",
+            }
+        );
+
+        setFormData(prev => ({
+            ...prev,
+            photo: file,
+        }));
+
+        setShowCamera(false);
+    };
+
     return (
         <>
             <div className="fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center backdrop-blur-sm p-4">
@@ -196,13 +243,31 @@ const Addmember = ({ member, onClose, onSuccess }) => {
                     {/* Body */}
                     <div className="p-6 overflow-y-auto">
                         <div className="flex flex-col lg:flex-row gap-8">
+
                             {/* Photo */}
+
                             <div className="flex flex-col items-center gap-3">
-                                <div className="w-48 h-48 rounded-xl bg-slate-50 border border-slate-200 flex flex-col items-center justify-center text-slate-400 overflow-hidden relative group">
-                                    <Camera size={24} className="opacity-50" />
+                                <div className="w-48 h-48 rounded-xl bg-slate-50 border border-slate-200 overflow-hidden relative group">
+
+                                    {preview ? (
+                                        <img
+                                            src={preview}
+                                            alt="Preview"
+                                            className="w-full h-full object-cover"
+                                        />
+                                    ) : (
+                                        <div className="w-full h-full flex items-center justify-center text-slate-400">
+                                            <Camera size={40} />
+                                        </div>
+                                    )}
 
                                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center gap-2 transition-opacity">
-                                        <button className="bg-blue-600 text-white text-[10px] font-bold px-4 py-2 rounded-full hover:bg-blue-700 w-32 flex items-center justify-center gap-2">
+
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowCamera(true)}
+                                            className="bg-blue-600 text-white text-[10px] font-bold px-4 py-2 rounded-full hover:bg-blue-700 w-32 flex items-center justify-center gap-2"
+                                        >
                                             <Camera size={14} />
                                             Webcam
                                         </button>
@@ -212,12 +277,18 @@ const Addmember = ({ member, onClose, onSuccess }) => {
                                                 type="file"
                                                 accept="image/*"
                                                 className="hidden"
-                                                onChange={(e) =>
-                                                    setFormData({
-                                                        ...formData,
-                                                        photo: e.target.files[0],
-                                                    })
-                                                }
+                                                onChange={(e) => {
+                                                    const file = e.target.files[0];
+
+                                                    if (file) {
+                                                        setFormData({
+                                                            ...formData,
+                                                            photo: file,
+                                                        });
+
+                                                        setPreview(URL.createObjectURL(file));
+                                                    }
+                                                }}
                                             />
 
                                             <div className="bg-white text-slate-900 text-[10px] font-bold px-4 py-2 rounded-full hover:bg-slate-100 w-32 flex items-center justify-center gap-2">
@@ -225,8 +296,46 @@ const Addmember = ({ member, onClose, onSuccess }) => {
                                                 Upload
                                             </div>
                                         </label>
+
                                     </div>
                                 </div>
+
+                                {showCamera && (
+                                    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+
+                                        <div className="bg-white rounded-xl p-5 w-[500px]">
+
+                                            <Webcam
+                                                ref={webcamRef}
+                                                audio={false}
+                                                screenshotFormat="image/jpeg"
+                                                className="rounded-lg w-full"
+                                            />
+
+                                            <div className="flex justify-end gap-3 mt-4">
+
+                                                <button
+                                                    onClick={() => setShowCamera(false)}
+                                                    className="px-4 py-2 bg-gray-300 rounded"
+                                                >
+                                                    Cancel
+                                                </button>
+
+                                                <button
+                                                    onClick={capture}
+                                                    className="px-4 py-2 bg-blue-600 text-white rounded"
+                                                >
+                                                    Capture
+                                                </button>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                )}
+
+
                             </div>
 
                             {/* Form */}
@@ -416,6 +525,36 @@ const Addmember = ({ member, onClose, onSuccess }) => {
                                                 ))}
                                             </select>
                                         </div>
+
+
+                                        <div>
+                                            <label className="text-xs font-medium text-slate-600">
+                                                BRANCH
+                                            </label>
+                                            <select
+                                                value={formData.branch}
+                                                onChange={(e) =>
+                                                    setFormData({
+                                                        ...formData,
+                                                        branch: e.target.value,
+                                                    })
+                                                }
+                                                className="w-full mt-1 px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            >
+                                                <option value="">Select Branch</option>
+                                                {branches.map((branch) => (
+                                                    <option key={branch.id} value={branch.id}>
+                                                        {branch.name}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+
+
+
+
+
+
 
                                         <div>
                                             <label className="text-xs font-medium text-slate-600">

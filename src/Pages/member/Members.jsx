@@ -490,6 +490,9 @@ const Members = () => {
               <th className="w-[110px] px-6 py-4 text-left text-xs font-bold text-slate-600">
                 PLAN
               </th>
+              <th className="w-[110px] px-6 py-4 text-left text-xs font-bold text-slate-600">
+                BRANCH
+              </th>
               <th className="w-[140px] px-6 py-4 text-left text-xs font-bold text-slate-600">
                 JOIN DATE
               </th>
@@ -549,6 +552,10 @@ const Members = () => {
 
                 <td className="px-6 py-4 text-sm truncate">
                   {member.plan}
+                </td>
+
+                <td className="px-6 py-4 text-sm truncate">
+                  {member.branch}
                 </td>
 
                 <td className="px-6 py-4 text-sm whitespace-nowrap">

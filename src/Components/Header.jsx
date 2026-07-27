@@ -7,7 +7,7 @@ const Header = () => {
         <header className="sticky top-0 z-40 w-full bg-white border-b border-slate-100">
             <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
                 <div>
-                    <h1 className="text-lg font-bold text-slate-900">Alreem Gym</h1>
+                    <h1 className="text-lg font-bold text-slate-900">Gym Management</h1>
                     <p className="text-[10px] font-medium text-slate-400 uppercase tracking-wider">Management System</p>
                 </div>
 

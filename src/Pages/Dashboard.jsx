@@ -410,13 +410,13 @@ const Dashboard = () => {
               <input
                 value={selectedMember?.name || ""}
                 readOnly
-                className="w-full border rounded-lg px-3 py-2"
+                className="w-full border rounded-lg px-3 py-3 border-slate-300"
               />
 
               <select
                 value={renewForm.plan}
                 onChange={handlePlanChange}
-                className="w-full border rounded-lg px-3 py-2"
+                className="w-full border rounded-lg px-3 py-3 border-slate-300"
               >
                 <option value="">Select Plan</option>
                 {plans.map((plan) => (
@@ -429,7 +429,7 @@ const Dashboard = () => {
               <input
                 value={renewForm.expiry_date}
                 readOnly
-                className="w-full border rounded-lg px-3 py-2"
+                className="w-full border rounded-lg px-3 py-3 border-slate-300"
                 placeholder="Expiry Date"
               />
 
