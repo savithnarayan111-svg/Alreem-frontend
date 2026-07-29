@@ -60,20 +60,63 @@ const ProductFormModal = ({
                     </h2>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        {["name", "description", "category", "price", "stock"].map((field) => (
-                            <input
-                                key={field}
-                                placeholder={field.toUpperCase()}
-                                value={formData[field]}
-                                onChange={(e) =>
-                                    setFormData({
-                                        ...formData,
-                                        [field]: e.target.value,
-                                    })
-                                }
-                                className="w-full border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            />
-                        ))}
+                        <input
+                            type="text"
+                            placeholder="Product Name"
+                            value={formData.name}
+                            onChange={(e) =>
+                                setFormData({ ...formData, name: e.target.value })
+                            }
+                            className="w-full border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+
+                        <textarea
+                            placeholder="Description"
+                            value={formData.description}
+                            onChange={(e) =>
+                                setFormData({ ...formData, description: e.target.value })
+                            }
+                            className="w-full border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+
+                        <select
+                            name="category"
+                            value={formData.category}
+                            onChange={(e) =>
+                                setFormData({ ...formData, category: e.target.value })
+                            }
+                            required
+                            className="w-full border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                            <option value="">Select Category</option>
+                            <option value="supplements">Supplements</option>
+                            <option value="equipment">Equipment</option>
+                            <option value="accessories">Gym Accessories</option>
+                            <option value="apparel">Gym Apparel</option>
+                            <option value="footwear">Footwear</option>
+                            <option value="nutrition">Nutrition & Drinks</option>
+                            <option value="other">Other</option>
+                        </select>
+
+                        <input
+                            type="number"
+                            placeholder="Price"
+                            value={formData.price}
+                            onChange={(e) =>
+                                setFormData({ ...formData, price: e.target.value })
+                            }
+                            className="w-full border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+
+                        <input
+                            type="number"
+                            placeholder="Stock"
+                            value={formData.stock}
+                            onChange={(e) =>
+                                setFormData({ ...formData, stock: e.target.value })
+                            }
+                            className="w-full border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
 
                         <input
                             type="file"
@@ -81,7 +124,7 @@ const ProductFormModal = ({
                             onChange={(e) =>
                                 setFormData({
                                     ...formData,
-                                    image: e.target.files[0],
+                                    image: e.target.files?.[0] || null,
                                 })
                             }
                             className="w-full border border-slate-300 rounded-lg px-4 py-3"

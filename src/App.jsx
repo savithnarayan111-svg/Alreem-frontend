@@ -12,6 +12,8 @@ import Invoice from "./Pages/Invoice";
 import Staffs from "./Pages/Staffs/Staffs";
 import Transactions from "./Pages/Transactions";
 import Enquiry from "./Pages/Enquiry";
+import Transaction from "./Pages/Transaction";
+import Profit_loss from "./Pages/Profit_loss";
 // import Login from "./Pages/Login";
 
 const router = createBrowserRouter([
@@ -36,6 +38,10 @@ const router = createBrowserRouter([
       { path: "staffs", element: <Staffs /> },
       { path: "transactions", element: <Transactions /> },
       { path: "enquiry", element: <Enquiry /> },
+      { path: "/transaction", element: <Transaction /> },
+      { path: "/profit_loss", element: <Profit_loss /> },
+
+
     ],
   },
 ]);

@@ -138,6 +138,7 @@ const Sales = () => {
                             <th className="px-4 py-4 text-left text-xs font-bold text-slate-600">SALE ID</th>
                             <th className="px-4 py-4 text-left text-xs font-bold text-slate-600">MEMBER</th>
                             <th className="px-4 py-4 text-left text-xs font-bold text-slate-600">PRODUCT</th>
+                            <th className="px-4 py-4 text-left text-xs font-bold text-slate-600">CATEGORY</th>
                             <th className="px-4 py-4 text-left text-xs font-bold text-slate-600">QTY</th>
                             <th className="px-4 py-4 text-left text-xs font-bold text-slate-600">PAYMENT</th>
                             <th className="px-4 py-4 text-left text-xs font-bold text-slate-600">PRICE</th>
@@ -152,6 +153,7 @@ const Sales = () => {
                                 <td className="px-4 py-3">{sale.id}</td>
                                 <td className="px-4 py-3">{sale.member_id}/{sale.member_name}</td>
                                 <td className="px-4 py-3">{sale.product}</td>
+                                <td className="px-4 py-3">{sale.category}</td>
                                 <td className="px-4 py-3">{sale.quantity}</td>
                                 <td className="px-4 py-3">{sale.payment_method}</td>
                                 <td className="px-4 py-3">₹{sale.unit_price}</td>

@@ -3,30 +3,60 @@ import { getSales, Saleslist } from "../api/getSales";
 
 export const useSales = () => {
     const [sales, setSales] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     const fetchSales = async () => {
-        const data = await getSales();
-        setSales(data.sales || []);
+        try {
+            setLoading(true);
+
+            const data = await getSales();
+
+            setSales(data?.sales || []);
+        } catch (error) {
+            console.error("Error fetching sales:", error);
+            setSales([]);
+        } finally {
+            setLoading(false);
+        }
     };
 
     useEffect(() => {
         fetchSales();
     }, []);
 
-    return { sales };
+    return {
+        sales,
+        loading,
+        fetchSales,
+    };
 };
 
 export const useTodaySales = () => {
     const [todaySales, setTodaySales] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     const fetchTodaySales = async () => {
-        const res = await Saleslist();
-        setTodaySales(res.data.sales || []);
+        try {
+            setLoading(true);
+
+            const res = await Saleslist();
+
+            setTodaySales(res?.data?.sales || []);
+        } catch (error) {
+            console.error("Error fetching today's sales:", error);
+            setTodaySales([]);
+        } finally {
+            setLoading(false);
+        }
     };
 
     useEffect(() => {
         fetchTodaySales();
     }, []);
 
-    return { todaySales };
+    return {
+        todaySales,
+        loading,
+        fetchTodaySales,
+    };
 };

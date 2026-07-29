@@ -1,5 +1,6 @@
 import { useState } from "react";
 import useBranches from "../hooks/Branches";
+import useBranchMembers from "../hooks/Branch_members";
 import {
   Building2,
   Plus,
@@ -10,12 +11,22 @@ import {
 } from "lucide-react";
 import AlertMessage from "../Components/AlertMessage";
 import ConfirmActionModal from "../Components/ConfirmActionModal";
+import Branch_members from "../Components/Branch_members";
 
 export default function Branches() {
   const { branches, addBranch, editBranch, removeBranch } = useBranches();
-
+  const { members, fetchBranchMembers } = useBranchMembers();
+  const [selectedBranch, setSelectedBranch] = useState(null);
+  const [showBranchModal, setShowBranchModal] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState(null);
+  const openBranchModal = async (branch) => {
+    setSelectedBranch(branch);
+
+    await fetchBranchMembers(branch.id);
+
+    setShowBranchModal(true);
+  };
 
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
@@ -247,6 +258,7 @@ export default function Branches() {
         {branches.map((b) => (
           <div
             key={b.id}
+            onClick={() => openBranchModal(b)}
             className="bg-white p-6 rounded-xl border-slate-300 shadow-md shadow-md"
           >
             <div className="flex justify-between">
@@ -254,14 +266,19 @@ export default function Branches() {
 
               <div className="flex gap-2">
                 <button
-                  onClick={() => openEdit(b)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    openEdit(b);
+                  }}
                   className="p-2 rounded-md hover:bg-green-100"
                 >
                   <Edit2 size={16} className="text-green-600" />
                 </button>
 
                 <button
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation();
+
                     openConfirmModal({
                       title: "Delete Branch",
                       message: `Are you sure you want to delete ${b.name}?`,
@@ -272,6 +289,7 @@ export default function Branches() {
                         await removeBranch(b.id);
                       },
                     });
+
                   }}
                   className="p-2 rounded-md hover:bg-red-100"
                 >
@@ -312,6 +330,16 @@ export default function Branches() {
             show: false,
           }))
         }
+      />
+
+      <Branch_members
+        isOpen={showBranchModal}
+        onClose={() => {
+          setShowBranchModal(false);
+          setSelectedBranch(null);
+        }}
+        branch={selectedBranch}
+        members={members}
       />
 
       <ConfirmActionModal

@@ -735,7 +735,7 @@ const Members = () => {
               className="w-full border border-slate-300 shadow-md rounded-lg px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
 
-            <input
+            {/* <input
               type="text"
               placeholder="Payment Type"
               value={paymentData.payment_type}
@@ -746,7 +746,7 @@ const Members = () => {
                 })
               }
               className="w-full border border-slate-300 shadow-md rounded-lg px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+            /> */}
 
             <select
               value={paymentData.payment_method}

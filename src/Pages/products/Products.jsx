@@ -226,6 +226,13 @@ const Products = () => {
                         <option value="all">All</option>
                         <option value="supplements">Supplements</option>
                         <option value="equipment">Equipment</option>
+                        <option value="accessories">Gym Accessories</option>
+                        <option value="apparel">Gym Apparel</option>
+                        <option value="footwear">Footwear</option>
+                        <option value="nutrition">Nutrition & Drinks</option>
+                        <option value="other">Other</option>
+
+
                     </select>
 
                     <select
