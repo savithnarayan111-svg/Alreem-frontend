@@ -13,7 +13,7 @@ const Income_members = () => {
     }, []);
 
     const maxAmount =
-        Math.max(...memberIncome.map((item) => item.amount), 1);
+        Math.max(...memberIncome.map((item) => item.amount), 0);
 
     return (
         <div className="w-full max-w-2xl mx-auto bg-white rounded-3xl shadow-md p-8">
