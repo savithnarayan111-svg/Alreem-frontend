@@ -1,18 +1,28 @@
 import React from "react";
 import useDashboard from "../../hooks/useDashboard";
 
-const Expense_category = () => {
-    const { expenseCategories, loading } = useDashboard();
+const Expense_category = ({ period = "daily" }) => {
+    const {
+        expenseCategories,
+        loading,
+    } = useDashboard(period);
 
     const maxAmount = Math.max(
-        ...expenseCategories.map((item) => Number(item.amount)),
+        ...expenseCategories.map(
+            (item) => Number(item.amount) || 0
+        ),
         1
     );
 
+    const periodLabel =
+        period.charAt(0).toUpperCase() + period.slice(1);
+
     if (loading) {
         return (
-            <div className="w-80 rounded-2xl bg-white shadow-md p-5">
-                <p>Loading...</p>
+            <div className="w-full max-w-2xl mx-auto bg-white rounded-3xl shadow-md p-8">
+                <p className="text-sm text-gray-400">
+                    Loading...
+                </p>
             </div>
         );
     }
@@ -20,18 +30,32 @@ const Expense_category = () => {
     return (
         <div className="w-full max-w-2xl mx-auto bg-white rounded-3xl shadow-md p-8">
 
-            <h2 className="text-xl font-bold text-gray-900 mb-10">
-                Expense by Category
-            </h2>
+            <div className="mb-10">
+                <h2 className="text-xl font-bold text-gray-900">
+                    Expense by Category
+                </h2>
+
+                <p className="text-sm text-gray-400 mt-1">
+                    {periodLabel} expenses
+                </p>
+            </div>
 
             <div className="space-y-6">
+
                 {expenseCategories.length > 0 ? (
                     expenseCategories.map((item, index) => {
-                        const width = (Number(item.amount) / maxAmount) * 100;
+
+                        const amount =
+                            Number(item.amount) || 0;
+
+                        const width =
+                            maxAmount > 0
+                                ? (amount / maxAmount) * 100
+                                : 0;
 
                         return (
                             <div
-                                key={index}
+                                key={`${item.category}-${index}`}
                                 className="flex items-center gap-3"
                             >
                                 <span className="w-24 text-sm text-gray-600 capitalize">
@@ -40,7 +64,7 @@ const Expense_category = () => {
 
                                 <div className="flex-1">
                                     <div
-                                        className="h-6 rounded-md bg-red-500"
+                                        className="h-6 rounded-md bg-red-500 transition-all duration-300"
                                         style={{
                                             width: `${width}%`,
                                         }}
@@ -48,7 +72,7 @@ const Expense_category = () => {
                                 </div>
 
                                 <span className="text-sm font-medium text-gray-700">
-                                    ₹{Number(item.amount).toLocaleString("en-US")}
+                                    ₹{amount.toLocaleString("en-IN")}
                                 </span>
                             </div>
                         );
@@ -58,6 +82,7 @@ const Expense_category = () => {
                         No expense data available
                     </p>
                 )}
+
             </div>
         </div>
     );

@@ -1,98 +1,94 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
     ShoppingCart,
     Wallet,
     IndianRupee,
     TrendingUp,
 } from "lucide-react";
-import useDashboard from "../../hooks/useDashboard"
+import useDashboard from "../../hooks/useDashboard";
 
-const Kpis = () => {
+const Kpis = ({ period = "daily" }) => {
+
     const {
         stats,
         loading,
-        fetchDashboardStats,
-    } = useDashboard();
+    } = useDashboard(period);
 
-    useEffect(() => {
-        fetchDashboardStats();
-    }, []);
+    const formatAmount = (value) => {
+        return Number(value || 0).toLocaleString("en-IN");
+    };
 
-    if (loading) {
-        return <p>Loading...</p>;
-    }
+    const periodLabel =
+        period.charAt(0).toUpperCase() + period.slice(1);
+
+    const cards = [
+        {
+            title: `${periodLabel} Sales`,
+            value: stats?.total_sales,
+            icon: ShoppingCart,
+            iconStyle: "bg-blue-50 text-blue-500",
+        },
+        {
+            title: `${periodLabel} Income`,
+            value: stats?.total_income,
+            icon: IndianRupee,
+            iconStyle: "bg-emerald-50 text-emerald-500",
+        },
+        {
+            title: `${periodLabel} Expense`,
+            value: stats?.total_expense,
+            icon: Wallet,
+            iconStyle: "bg-red-50 text-red-500",
+        },
+        {
+            title: `${periodLabel} Profit`,
+            value: stats?.total_profit,
+            icon: TrendingUp,
+            iconStyle: "bg-violet-50 text-violet-500",
+        },
+    ];
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+        <div className="w-full">
 
-            {/* Total Sales */}
-            <div className="bg-white rounded-2xl shadow-md p-6 flex items-center gap-4">
-                <div className="bg-blue-500 text-white p-2 rounded-full">
-                    <ShoppingCart size={28} />
-                </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
 
-                <div>
-                    <p className="text-sm text-slate-500">Total Sales</p>
-                    <h2 className="text-2xl font-bold">
-                        ₹{Number(stats?.total_sales || 0).toLocaleString("en-US")}
-                    </h2>
-                    {/* <p className="text-green-600 text-sm">
-                        +{Number(stats?.sales_growth || 0).toFixed(1)}%
-                    </p> */}
-                </div>
+                {cards.map((card) => {
+                    const Icon = card.icon;
+
+                    return (
+                        <div
+                            key={card.title}
+                            className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 hover:shadow-md transition-shadow"
+                        >
+                            <div className="flex items-center gap-5">
+
+                                <div
+                                    className={`w-11 h-11 rounded-xl flex items-center justify-center ${card.iconStyle}`}
+                                >
+                                    <Icon size={22} />
+                                </div>
+
+                                <div>
+                                    <p className="text-sm text-slate-500">
+                                        {card.title}
+                                    </p>
+
+                                    {loading ? (
+                                        <div className="mt-2 h-8 w-32 rounded-lg bg-slate-100 animate-pulse" />
+                                    ) : (
+                                        <h2 className="mt-2 text-2xl font-bold text-slate-900">
+                                            ₹{formatAmount(card.value)}
+                                        </h2>
+                                    )}
+                                </div>
+
+                            </div>
+                        </div>
+                    );
+                })}
+
             </div>
-
-            {/* Total Expense */}
-            <div className="bg-white rounded-2xl shadow-md p-6 flex items-center gap-4">
-                <div className="bg-red-500 text-white p-2 rounded-full">
-                    <Wallet size={28} />
-                </div>
-
-                <div>
-                    <p className="text-sm text-slate-500">Total Expense</p>
-                    <h2 className="text-2xl font-bold">
-                        ₹{Number(stats?.total_expense || 0).toLocaleString("en-US")}
-                    </h2>
-                    {/* <p className="text-red-600 text-sm">
-                        {Number(stats?.expense_growth || 0).toFixed(1)}%
-                    </p> */}
-                </div>
-            </div>
-
-            {/* Total Income */}
-            <div className="bg-white rounded-2xl shadow-md p-6 flex items-center gap-4">
-                <div className="bg-emerald-500 text-white p-2 rounded-full">
-                    <IndianRupee size={28} />
-                </div>
-
-                <div>
-                    <p className="text-sm text-slate-500">Total Income</p>
-                    <h2 className="text-2xl font-bold">
-                        ₹{Number(stats?.total_income || 0).toLocaleString("en-US")}
-                    </h2>
-                    {/* <p className="text-green-600 text-sm">
-                        +{Number(stats?.revenue_growth || 0).toFixed(1)}%
-                    </p> */}
-                </div>
-            </div>
-
-            {/* Total Profit */}
-            <div className="bg-white rounded-2xl shadow-md p-6 flex items-center gap-4">
-                <div className="bg-violet-500 text-white p-2 rounded-full">
-                    <TrendingUp size={28} />
-                </div>
-
-                <div>
-                    <p className="text-sm text-slate-500">Total Profit</p>
-                    <h2 className="text-2xl font-bold">
-                        ₹{Number(stats?.total_profit || 0).toLocaleString("en-US")}
-                    </h2>
-                    {/* <p className="text-green-600 text-sm">
-                        +{Number(stats?.profit_growth || 0).toFixed(1)}%
-                    </p> */}
-                </div>
-            </div>
-
         </div>
     );
 };

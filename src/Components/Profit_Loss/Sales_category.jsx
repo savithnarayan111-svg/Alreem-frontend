@@ -1,4 +1,10 @@
-import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
+import React from "react";
+import {
+    PieChart,
+    Pie,
+    Cell,
+    ResponsiveContainer,
+} from "recharts";
 import { useSales } from "../../hooks/useSales";
 
 const COLORS = [
@@ -19,8 +25,13 @@ const CATEGORY_LABELS = {
     other: "Other",
 };
 
-const Sales_category = () => {
-    const { sales, loading } = useSales();
+const Sales_category = ({ period = "daily" }) => {
+
+    // Pass period directly to hook
+    const {
+        sales,
+        loading,
+    } = useSales(period);
 
     const categoryMap = {};
 
@@ -37,95 +48,147 @@ const Sales_category = () => {
         0
     );
 
-    const data = Object.entries(categoryMap).map(([name, amount]) => ({
-        name,
-        amount,
-        value:
-            totalSales > 0
-                ? Number(((amount / totalSales) * 100).toFixed(1))
-                : 0,
-    }));
+    const data = Object.entries(categoryMap).map(
+        ([name, amount]) => ({
+            name,
+            amount,
+            value:
+                totalSales > 0
+                    ? Number(
+                        ((amount / totalSales) * 100).toFixed(1)
+                    )
+                    : 0,
+        })
+    );
+
+    const periodLabel =
+        period.charAt(0).toUpperCase() + period.slice(1);
 
     return (
-        <div className="w-full max-w-2xl mx-auto bg-white rounded-3xl shadow-md p-8">
+        <div className="w-full bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
 
-            <h2 className="text-xl font-bold text-gray-900 mb-10">
-                Sales by Category
-            </h2>
+            {/* Header */}
+            <div className="mb-6">
+                <h2 className="text-lg font-semibold text-slate-900">
+                    Sales by Category
+                </h2>
 
+                <p className="text-sm text-slate-400 mt-1">
+                    {periodLabel} sales distribution
+                </p>
+            </div>
+
+            {/* Loading */}
             {loading ? (
-                <p className="text-center text-gray-500">
-                    Loading sales...
-                </p>
+                <div className="h-72 flex items-center justify-center">
+                    <p className="text-sm text-slate-400">
+                        Loading sales...
+                    </p>
+                </div>
             ) : data.length === 0 ? (
-                <p className="text-center text-gray-500">
-                    No sales available
-                </p>
+
+                /* Empty */
+                <div className="h-72 flex items-center justify-center">
+                    <p className="text-sm text-slate-400">
+                        No sales available
+                    </p>
+                </div>
+
             ) : (
                 <>
+                    {/* Donut */}
                     <div className="relative w-full h-64">
-                        <ResponsiveContainer width="100%" height="100%">
+
+                        <ResponsiveContainer
+                            width="100%"
+                            height="100%"
+                        >
                             <PieChart>
                                 <Pie
                                     data={data}
                                     dataKey="value"
-                                    innerRadius={80}
-                                    outerRadius={120}
+                                    innerRadius={75}
+                                    outerRadius={105}
                                     stroke="none"
+                                    paddingAngle={2}
                                 >
                                     {data.map((_, index) => (
                                         <Cell
                                             key={index}
-                                            fill={COLORS[index % COLORS.length]}
+                                            fill={
+                                                COLORS[
+                                                index %
+                                                COLORS.length
+                                                ]
+                                            }
                                         />
                                     ))}
                                 </Pie>
                             </PieChart>
                         </ResponsiveContainer>
 
+                        {/* Center */}
                         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                            <p className="text-lg text-gray-600">
+
+                            <p className="text-xs text-slate-400">
                                 Total Sales
                             </p>
 
-                            <h2 className="text-4xl font-bold text-slate-800">
-                                ₹{totalSales.toLocaleString("en-US")}
+                            <h2 className="text-3xl font-bold text-slate-900 mt-1">
+                                ₹{totalSales.toLocaleString("en-IN")}
                             </h2>
+
                         </div>
                     </div>
 
-                    <div className="space-y-5 mt-6">
+                    {/* Categories */}
+                    <div className="mt-6 space-y-4">
+
                         {data.map((item, index) => (
                             <div
                                 key={item.name}
-                                className="flex justify-between items-center"
+                                className="flex items-center justify-between"
                             >
-                                <div className="flex items-center gap-3">
+
+                                <div className="flex items-center gap-3 min-w-0">
+
+                                    {/* Dot */}
                                     <div
-                                        className="w-4 h-4 rounded"
+                                        className="w-3 h-3 rounded-full flex-shrink-0"
                                         style={{
                                             backgroundColor:
-                                                COLORS[index % COLORS.length],
+                                                COLORS[
+                                                index %
+                                                COLORS.length
+                                                ],
                                         }}
                                     />
 
-                                    <div>
-                                        <h3 className="font-medium">
-                                            {CATEGORY_LABELS[item.name] ||
-                                                item.name}
-                                        </h3>
+                                    {/* Details */}
+                                    <div className="min-w-0">
 
-                                        <p className="text-sm text-gray-500">
-                                            ₹{item.amount.toLocaleString("en-US")}
+                                        <p className="text-sm font-medium text-slate-700 truncate">
+                                            {
+                                                CATEGORY_LABELS[
+                                                item.name
+                                                ] || item.name
+                                            }
                                         </p>
+
+                                        <p className="text-xs text-slate-400 mt-0.5">
+                                            ₹{item.amount.toLocaleString("en-IN")}
+                                        </p>
+
                                     </div>
                                 </div>
 
-                                <span className="font-semibold text-slate-700">
+                                <span className="text-sm font-semibold text-slate-700 ml-4">
                                     {item.value}%
                                 </span>
+
                             </div>
                         ))}
+
                     </div>
                 </>
             )}

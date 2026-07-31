@@ -5,10 +5,14 @@ import {
     getMembersIncome,
 } from "../api/income";
 
-const useAdditionalIncomes = () => {
+const useAdditionalIncomes = (period = "daily") => {
     const [incomes, setIncomes] = useState([]);
     const [memberIncome, setMemberIncome] = useState([]);
     const [loading, setLoading] = useState(false);
+
+    // =========================================
+    // ALL INCOMES
+    // =========================================
 
     const fetchAdditionalIncomes = async () => {
         try {
@@ -25,35 +29,67 @@ const useAdditionalIncomes = () => {
         }
     };
 
-    const fetchMemberIncome = async () => {
-        try {
-            const res = await getMembersIncome();
+    // =========================================
+    // MEMBER INCOME
+    // =========================================
 
-            setMemberIncome(res.data.income || []);
+    const fetchMemberIncome = async (
+        selectedPeriod = period
+    ) => {
+        try {
+            setLoading(true);
+
+            const res = await getMembersIncome(
+                selectedPeriod
+            );
+
+            setMemberIncome(
+                res.data.income || []
+            );
+
         } catch (error) {
-            console.error("Failed to fetch member income:", error);
+            console.error(
+                "Failed to fetch member income:",
+                error
+            );
+
             setMemberIncome([]);
+        } finally {
+            setLoading(false);
         }
     };
+
+    // =========================================
+    // CREATE INCOME
+    // =========================================
 
     const createIncome = async (data) => {
         try {
             const res = await addIncome(data);
 
             await fetchAdditionalIncomes();
-            await fetchMemberIncome();
+            await fetchMemberIncome(period);
 
             return res.data;
+
         } catch (error) {
-            console.error("Failed to add income:", error);
+            console.error(
+                "Failed to add income:",
+                error
+            );
+
             throw error;
         }
     };
 
+    // =========================================
+    // INITIAL / PERIOD CHANGE
+    // =========================================
+
     useEffect(() => {
         fetchAdditionalIncomes();
-        fetchMemberIncome();
-    }, []);
+        fetchMemberIncome(period);
+    }, [period]);
 
     return {
         incomes,

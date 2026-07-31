@@ -1,48 +1,87 @@
 import { useEffect, useState } from "react";
+
 import {
     getDashboardStats,
     getExpensecategory,
 } from "../api/dashboard";
 
-const useDashboard = () => {
+const useDashboard = (period = "daily") => {
+
     const [stats, setStats] = useState({});
     const [expenseCategories, setExpenseCategories] = useState([]);
+
     const [loading, setLoading] = useState(false);
 
-    const fetchDashboardStats = async () => {
-        try {
-            const res = await getDashboardStats();
-            setStats(res.data);
-        } catch (error) {
-            console.error("Failed to fetch dashboard stats:", error);
-            setStats({});
-        }
-    };
+    // ================================
+    // DASHBOARD / KPI
+    // ================================
 
-    const fetchExpenseCategories = async () => {
+    const fetchDashboardStats = async (
+        selectedPeriod = period
+    ) => {
         try {
-            const res = await getExpensecategory();
-            setExpenseCategories(res.data.expenses || []);
-        } catch (error) {
-            console.error("Failed to fetch expense categories:", error);
-            setExpenseCategories([]);
-        }
-    };
-
-    useEffect(() => {
-        const fetchData = async () => {
             setLoading(true);
 
-            await Promise.all([
-                fetchDashboardStats(),
-                fetchExpenseCategories(),
-            ]);
+            const res = await getDashboardStats(
+                selectedPeriod
+            );
 
+            setStats(res.data);
+
+        } catch (error) {
+
+            console.error(
+                "Failed to fetch dashboard stats:",
+                error
+            );
+
+            setStats({});
+
+        } finally {
             setLoading(false);
-        };
+        }
+    };
 
-        fetchData();
-    }, []);
+    // ================================
+    // EXPENSE CATEGORY
+    // ================================
+
+    const fetchExpenseCategories = async (
+        selectedPeriod = period
+    ) => {
+        try {
+            setLoading(true);
+
+            const res = await getExpensecategory(
+                selectedPeriod
+            );
+
+            setExpenseCategories(
+                res.data.expenses || []
+            );
+
+        } catch (error) {
+
+            console.error(
+                "Failed to fetch expense categories:",
+                error
+            );
+
+            setExpenseCategories([]);
+
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // ================================
+    // PERIOD CHANGE
+    // ================================
+
+    useEffect(() => {
+        fetchDashboardStats(period);
+        fetchExpenseCategories(period);
+    }, [period]);
 
     return {
         stats,
