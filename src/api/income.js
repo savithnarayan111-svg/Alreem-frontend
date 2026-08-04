@@ -18,6 +18,16 @@ export const addIncome = (data) => {
 //     return api.get("admin/api/income_by_members/");
 // };
 
-export const getMembersIncome = (period = "daily") => {
-    return api.get(`admin/api/income_by_members/?period=${period}`);
-}
+export const getMembersIncome = (
+    period = "daily",
+    selectedDate = null
+) => {
+
+    let url = `admin/api/income_by_members/?period=${period}`;
+
+    if (selectedDate) {
+        url += `&date=${selectedDate}`;
+    }
+
+    return api.get(url);
+};

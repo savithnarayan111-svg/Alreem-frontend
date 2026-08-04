@@ -5,91 +5,151 @@ import {
     getExpensecategory,
 } from "../api/dashboard";
 
-const useDashboard = (period = "daily") => {
+
+const useDashboard = (
+    period = "daily",
+    selectedDate = null
+) => {
+
 
     const [stats, setStats] = useState({});
+
     const [expenseCategories, setExpenseCategories] = useState([]);
 
     const [loading, setLoading] = useState(false);
 
-    // ================================
-    // DASHBOARD / KPI
-    // ================================
+
 
     const fetchDashboardStats = async (
-        selectedPeriod = period
+        selectedPeriod = period,
+        date = selectedDate
     ) => {
+
         try {
-            setLoading(true);
 
             const res = await getDashboardStats(
-                selectedPeriod
+                selectedPeriod,
+                date
             );
 
-            setStats(res.data);
+            setStats(
+                res.data || {}
+            );
+
 
         } catch (error) {
 
             console.error(
-                "Failed to fetch dashboard stats:",
+                "Dashboard Error:",
                 error
             );
 
             setStats({});
 
-        } finally {
-            setLoading(false);
         }
+
     };
 
-    // ================================
-    // EXPENSE CATEGORY
-    // ================================
+
+
 
     const fetchExpenseCategories = async (
-        selectedPeriod = period
+        selectedPeriod = period,
+        date = selectedDate
     ) => {
+
         try {
-            setLoading(true);
 
             const res = await getExpensecategory(
-                selectedPeriod
+                selectedPeriod,
+                date
             );
 
+
             setExpenseCategories(
-                res.data.expenses || []
+                res.data?.expenses || []
             );
+
 
         } catch (error) {
 
             console.error(
-                "Failed to fetch expense categories:",
+                "Expense Category Error:",
                 error
             );
 
+
             setExpenseCategories([]);
 
-        } finally {
-            setLoading(false);
         }
+
     };
 
-    // ================================
-    // PERIOD CHANGE
-    // ================================
+
+
+
 
     useEffect(() => {
-        fetchDashboardStats(period);
-        fetchExpenseCategories(period);
-    }, [period]);
+
+
+        const loadDashboard = async () => {
+
+            try {
+
+                setLoading(true);
+
+
+                await Promise.all([
+
+                    fetchDashboardStats(
+                        period,
+                        selectedDate
+                    ),
+
+                    fetchExpenseCategories(
+                        period,
+                        selectedDate
+                    )
+
+                ]);
+
+
+            } finally {
+
+                setLoading(false);
+
+            }
+
+        };
+
+
+        loadDashboard();
+
+
+    }, [
+        period,
+        selectedDate
+    ]);
+
+
+
+
 
     return {
+
         stats,
+
         expenseCategories,
+
         loading,
+
         fetchDashboardStats,
+
         fetchExpenseCategories,
+
     };
+
 };
+
 
 export default useDashboard;

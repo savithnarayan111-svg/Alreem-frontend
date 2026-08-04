@@ -4,23 +4,33 @@ import {
     Saleslist,
 } from "../api/getSales";
 
-export const useSales = (period = "daily") => {
+
+export const useSales = (
+    period = "daily",
+    selectedDate = null
+) => {
 
     const [sales, setSales] = useState([]);
     const [loading, setLoading] = useState(false);
 
-    const fetchSales = async (
-        selectedPeriod = period
-    ) => {
+
+    const fetchSales = async () => {
 
         try {
+
             setLoading(true);
 
+
             const data = await getSales(
-                selectedPeriod
+                period,
+                selectedDate
             );
 
-            setSales(data?.sales || []);
+
+            setSales(
+                data?.sales || []
+            );
+
 
         } catch (error) {
 
@@ -31,14 +41,25 @@ export const useSales = (period = "daily") => {
 
             setSales([]);
 
+
         } finally {
+
             setLoading(false);
+
         }
+
     };
 
+
     useEffect(() => {
-        fetchSales(period);
-    }, [period]);
+
+        fetchSales();
+
+    }, [
+        period,
+        selectedDate
+    ]);
+
 
     return {
         sales,
@@ -48,21 +69,27 @@ export const useSales = (period = "daily") => {
 };
 
 
+
 export const useTodaySales = () => {
 
     const [todaySales, setTodaySales] = useState([]);
     const [loading, setLoading] = useState(false);
 
+
     const fetchTodaySales = async () => {
 
         try {
+
             setLoading(true);
 
+
             const res = await Saleslist();
+
 
             setTodaySales(
                 res?.data?.sales || []
             );
+
 
         } catch (error) {
 
@@ -73,14 +100,22 @@ export const useTodaySales = () => {
 
             setTodaySales([]);
 
+
         } finally {
+
             setLoading(false);
+
         }
+
     };
 
+
     useEffect(() => {
+
         fetchTodaySales();
+
     }, []);
+
 
     return {
         todaySales,

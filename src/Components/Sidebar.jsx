@@ -180,7 +180,7 @@ const Sidebar = () => {
 
         <SidebarItem
           icon={BadgeIndianRupee}
-          label="Sales"
+          label="Product Sales"
           path="/sales"
         />
 

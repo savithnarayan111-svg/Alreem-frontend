@@ -1,13 +1,20 @@
 import React, { useState } from "react";
-import api from "../../api/api";
 import { TriangleAlert } from "lucide-react"
+import { useMemberPause } from "../../hooks/usememberpause"
 
 const PauseMember = ({ member, onClose, onSuccess }) => {
+
+    const {
+        handlePause,
+        loading
+    } = useMemberPause();
+
     const [freezeDate, setFreezeDate] = useState("");
     const [alert, setAlert] = useState("");
-    const handlePause = async () => {
+    const handlePauseClick = async () => {
 
         if (!freezeDate) {
+
             setAlert("Please select a freeze date");
 
             setTimeout(() => {
@@ -17,32 +24,48 @@ const PauseMember = ({ member, onClose, onSuccess }) => {
             return;
         }
 
+
         try {
-            const response = await api.post(
-                `admin/api/members/pause/${member.id}/`,
-                {
-                    freeze_date: freezeDate,
-                }
+
+            const data = await handlePause(
+                member.id,
+                freezeDate
             );
 
-            onSuccess?.(response.data);
 
-            setAlert("Member paused successfully");
+            onSuccess?.(data);
+
+
+            setAlert(
+                "Member paused successfully"
+            );
+
 
             setTimeout(() => {
+
                 setAlert("");
+
                 onClose();
+
             }, 1500);
 
+
         } catch (error) {
-            setAlert("Failed to pause member");
+
+            setAlert(
+                "Failed to pause member"
+            );
+
 
             setTimeout(() => {
-                setAlert("");
-            }, 3000);
-        }
-    };
 
+                setAlert("");
+
+            }, 3000);
+
+        }
+
+    };
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm z-50">
             {alert && (
@@ -91,9 +114,11 @@ const PauseMember = ({ member, onClose, onSuccess }) => {
                     </button>
 
                     <button
-                        onClick={handlePause}
-                        className="px-4 py-2 bg-red-500 text-white rounded-lg">
-                        Confirm
+                        onClick={handlePauseClick}
+                        disabled={loading}
+                        className="px-4 py-2 bg-red-500 text-white rounded-lg"
+                    >
+                        {loading ? "Pausing..." : "Confirm"}
                     </button>
                 </div>
             </div>

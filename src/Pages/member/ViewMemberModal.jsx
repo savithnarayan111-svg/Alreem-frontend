@@ -3,6 +3,7 @@ import { X, Pause, CirclePlay } from "lucide-react";
 import { useState } from "react";
 import PauseMember from "./PauseMember";
 import ResumeMember from "./ResumeMember";
+import Pausememberview from "./Pausememberview";
 
 const ViewMemberModal = ({ member, onClose }) => {
     const [memberData, setMemberData] = useState(member);
@@ -31,11 +32,25 @@ const ViewMemberModal = ({ member, onClose }) => {
                     member={memberData}
                     onClose={() => setShowPauseModal(false)}
                     onSuccess={(data) => {
+
                         setMemberData(prev => ({
                             ...prev,
+
                             status: data.status,
+
                             is_paused: data.is_paused,
-                            pause_start_date: data.pause_start_date,
+
+                            pause_start_date: data.paused_date,
+
+                            pause_days_used:
+                                data.used_days_this_month,
+
+                            pause_days_remaining:
+                                data.remaining_days_this_month,
+
+                            pause_count:
+                                data.pause_count_this_month,
+
                         }));
 
                         setShowPauseModal(false);
@@ -50,10 +65,21 @@ const ViewMemberModal = ({ member, onClose }) => {
                     onSuccess={(newExpiryDate) => {
                         setMemberData(prev => ({
                             ...prev,
+
                             status: "Active",
+
                             is_paused: false,
+
                             pause_start_date: null,
+
+                            pause_days_used: 0,
+
+                            pause_days_remaining: 15,
+
+                            pause_count: prev.pause_count,
+
                             expiry_date: newExpiryDate,
+
                         }));
 
                         setShowResumeModal(false);
@@ -131,34 +157,7 @@ const ViewMemberModal = ({ member, onClose }) => {
                                     ? "Resume Membership"
                                     : "Pause Membership"}
                             </button>
-                            {memberData?.is_paused && (
-                                <div className="relative overflow-hidden bg-blue-900 p-5 rounded-lg">
 
-                                    {/* Large blurred background icon */}
-                                    <CirclePlay
-                                        size={120}
-                                        className="absolute right-2 top-2 text-white/10 blur-[2px]"
-                                    />
-
-                                    {/* Foreground content */}
-                                    <div className="relative z-10">
-                                        <div className="flex items-center gap-2 mb-3">
-                                            {/* <CirclePlay className="text-white" size={18} /> */}
-                                            <b className="text-white">LEAVE STATUS</b>
-                                        </div>
-
-                                        <div className="flex justify-between gap-7 text-white mb-2">
-                                            <p>Paused On:</p>
-                                            <b>{memberData?.pause_start_date}</b>
-                                        </div>
-
-                                        {/* <div className="flex justify-between text-white"> */}
-                                        {/* <p>Days So Far:</p> */}
-                                        {/* <b className="text-yellow-500">1 days</b> */}
-                                        {/* </div> */}
-                                    </div>
-                                </div>
-                            )}
                         </div>
 
                         {/* Details */}
@@ -206,22 +205,35 @@ const ViewMemberModal = ({ member, onClose }) => {
                                 </div>
                             </section>
 
-                            {/* Membership */}
                             <section>
                                 <h3 className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-4">
                                     Membership Details
                                 </h3>
 
                                 <div className="grid grid-cols-2 gap-4">
+
                                     <DetailCard
                                         label="Join Date"
                                         value={memberData?.join_date}
                                     />
+
                                     <DetailCard
                                         label="Expiry Date"
                                         value={memberData?.expiry_date}
                                     />
+
                                 </div>
+
+
+                                {/* Pause Status */}
+                                <div className="mt-5">
+
+                                    <Pausememberview
+                                        memberData={memberData}
+                                    />
+
+                                </div>
+
                             </section>
 
                             {/* Payments */}

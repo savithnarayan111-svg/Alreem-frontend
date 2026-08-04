@@ -1,32 +1,33 @@
 import React, { useState } from "react";
-import api from "../../api/api";
 import { TriangleAlert } from "lucide-react";
+import { useMemberPause } from "../../hooks/usememberpause"
 
 const ResumeMember = ({ member, onClose, onSuccess }) => {
+    const {
+        handleResume,
+        loading,
+    } = useMemberPause();
+
     const [resumeDate, setResumeDate] = useState("");
     const [alert, setAlert] = useState("");
 
-    const handleResume = async () => {
+    const handleResumeClick = async () => {
         if (!resumeDate) {
             setAlert("Please select a resume date");
 
-            setTimeout(() => {
-                setAlert("");
-            }, 3000);
-
+            setTimeout(() => setAlert(""), 3000);
             return;
         }
 
         try {
-            const response = await api.post(
-                `admin/api/members/resume/${member.id}/`,
-                {
-                    resume_date: resumeDate,
-                }
+            const data = await handleResume(
+                member.id,
+                resumeDate
             );
 
-            console.log("API Response:", response.data);
-            onSuccess?.(response.data.new_expiry_date);
+            console.log("API Response:", data);
+
+            onSuccess?.(data);
 
             setAlert("Member resumed successfully");
 
@@ -37,9 +38,7 @@ const ResumeMember = ({ member, onClose, onSuccess }) => {
         } catch (error) {
             setAlert("Failed to resume member");
 
-            setTimeout(() => {
-                setAlert("");
-            }, 3000);
+            setTimeout(() => setAlert(""), 3000);
         }
     };
 
@@ -97,11 +96,12 @@ const ResumeMember = ({ member, onClose, onSuccess }) => {
                         className="px-4 py-2 border border-slate-300 rounded-lg text-slate-600">
                         Cancel
                     </button>
-
                     <button
-                        onClick={handleResume}
-                        className="px-4 py-2 bg-blue-500 text-white rounded-lg">
-                        Confirm
+                        onClick={handleResumeClick}
+                        disabled={loading}
+                        className="px-4 py-2 bg-blue-500 text-white rounded-lg disabled:opacity-50"
+                    >
+                        {loading ? "Resuming..." : "Confirm"}
                     </button>
                 </div>
             </div>

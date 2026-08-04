@@ -8,7 +8,7 @@ import Members from "./Pages/member/Members";
 import Settings from "./Pages/Settings";
 import Products from "./Pages/products/Products";
 import Sales from "./Pages/Sales";
-import Invoice from "./Pages/Invoice";
+// import Invoice from "./Pages/Invoice";
 import Staffs from "./Pages/Staffs/Staffs";
 import Transactions from "./Pages/Transactions";
 import Enquiry from "./Pages/Enquiry";
@@ -34,7 +34,7 @@ const router = createBrowserRouter([
       { path: "products", element: <Products /> },
       { path: "settings", element: <Settings /> },
       { path: "sales", element: <Sales /> },
-      { path: "invoice", element: <Invoice /> },
+      // { path: "invoice", element: <Invoice /> },
       { path: "staffs", element: <Staffs /> },
       { path: "transactions", element: <Transactions /> },
       { path: "enquiry", element: <Enquiry /> },

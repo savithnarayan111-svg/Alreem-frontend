@@ -1,13 +1,38 @@
 import api from "./api";
 
-export const getDashboardStats = (period = "daily") => {
+
+export const getDashboardStats = (
+    period = "daily",
+    selectedDate = null
+) => {
+
     return api.get(
-        `admin/api/dashboard/?period=${period}`
+        "admin/api/dashboard/",
+        {
+            params: {
+                period,
+                date: selectedDate,
+            },
+        }
     );
+
 };
 
-export const getExpensecategory = (period = "daily") => {
+
+
+export const getExpensecategory = (
+    period = "daily",
+    selectedDate = null
+) => {
+
     return api.get(
-        `admin/api/expense_by_category/?period=${period}`
+        "admin/api/expense_by_category/",
+        {
+            params: {
+                period,
+                date: selectedDate,
+            },
+        }
     );
+
 };
